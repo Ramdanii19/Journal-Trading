@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // atau sesuai dengan database yang Anda gunakan
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String             @id
+  username       String
+  userImageSrc   String 
+  hearts         Int              @default(20)
+  level_user     Int            @default(1)
+  exp_user       Int          @default(0)
+  typingLessons  TypingLesson[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  HistoryTest    HistoryTyping[]
+  HistoryExpUp   HistoryExpUp[]
+}
+
+model Explore {
+  id           Int      @id @default(autoincrement())
+  title        String
+  levelExplore Int
+  exp          Int
+  detailExplore DetailExplore[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model DetailExplore {
+  id           Int      @id @default(autoincrement())
+  titleContent String
+  imgSrc       String
+  description  String
+  exploreId    Int
+  explore      Explore  @relation(fields: [exploreId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+
+model HistoryTyping {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  wpm       Int
+  accuracy  String
+  correct   Int
+  error     Int
+  time      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HistoryExpUp {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  source    String
+  expUp     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Quest {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String
+  expReward     Int
+  type          String  // Daily, Weekly, etc.
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model TypingLesson {
+  id        Int      @id @default(autoincrement())
+  title     String
+  level     Int
+  exp       Int
+  content   Json
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Level {
+  id        Int      @id @default(autoincrement())
+  level     Int
+  expRequired Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
